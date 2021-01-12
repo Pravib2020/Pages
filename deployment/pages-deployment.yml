@@ -17,7 +17,7 @@ spec:
         app: pages
     spec:
       containers:
-        - image: smileydiya/pages:config
+        - image: smileydiya/pages:pipeline
           name: pages
           ports:
             - containerPort: 8080
