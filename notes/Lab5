@@ -1,0 +1,58 @@
+Continuous Integration/Deployment
+This lab demonstrates the concepts of continuous integration/continuous deployment (CI/CD) for our development. We will be leveraging Github Actions which comes integrated with Github, for automating the process of CI/CD.
+
+Learning Outcomes
+After completing the lab, you will be able to:
+
+Describe how to create pipeline using Github Actions
+
+Continuously deploy your code to Kubernetes cluster
+
+Set-up Github Actions
+Configure the jobs within the pipeline workflow.
+
+Pipeline workflow:
+
+ Job sequence in the workflow:
+
+ 1.build-artifact ---> 2.deploy-to-cluster
+
+ Tasks within each job:
+ 1.build-artifact:
+   a.Build with Gradle
+   b.Upload Artifact
+   c.Build-Docker-Image
+
+ 2.deploy-to-cluster:
+   a.Install Kubectl
+   b.Configure AWS credentials
+   c.Login to production cluster
+   d.Create K8s deployments and resources
+Create the following secrets in github
+
+DOCKER_USERNAME
+DOCKER_PASSWORD
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+To add secrets, click on settings and select secrets from the left navigation menu within the github repository.
+
+The aws access key id and secret will be provided to you.
+
+Create .github/workflows/pipeline.yaml in the root project directory with the configuration. Refer to pipeline.yaml
+
+Update the tag name in pages-deployment.yaml file to pipeline
+
+Push your code to git repository
+
+Navigate to Actions tab in the github dashboard to see the progress of the pipeline.
+
+Upon successful completion of the workflow, you should be able to see the deployment and other objects in K8s cluster.
+
+Advanced Usecases
+Automating security concerns
+
+Automating code quality compliance
+
+Advanced testing using test clusters
+
+

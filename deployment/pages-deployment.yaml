@@ -20,7 +20,7 @@ spec:
         tier: service
     spec:
       containers:
-        - image: smileydiya/pages:monitor
+        - image: smileydiya/pages:scaling
           name: pages
           ports:
             - containerPort: 8080

@@ -1,0 +1,131 @@
+Externalize Configuration in Kubernetes
+Learning Outcomes
+After completing the lab, you will be able to:
+
+Use environment variables to configure an application running locally
+
+Describe how to configure a Spring Boot application on Kubernetes with ConfigMap
+
+Before starting the lab, cherry pick the config-start tag.
+
+git cherry-pick config-start --strategy-option theirs
+In case you get an error when you cherry-pick, open intellij, right-click on the project, select git → resolve-conflicts → accept theirs
+Externalize the welcome message
+As a result of cherry-pick some test cases have been updated. Have a look at HomeControllerTest class.
+
+Externalize the message being displayed into an environment variable called PAGE_CONTENT
+
+The goal is to ensure that your test cases are passing before dockerizing.
+
+Update HomeController class to externalize the welcome message through constructor injection
+
+Set the environment variable in build.gradle file for test and dev environments
+
+    bootRun.environment([
+                "PAGE_CONTENT": "YellowPages",
+    ])
+
+    test.environment([
+                "PAGE_CONTENT": "YellowPages",
+    ])
+Build and test the application just like you did in previous labs.
+
+Dockerize the application and tag it appropriately. For example, you can tag it as config
+
+docker build -t [docker_username]/pages:[tag] .
+Push the image to docker
+
+docker push [docker_username]/pages:[tag]
+
+Kubernetize the application
+Below are the 2 tasks to be completed within the kubernetes cluster
+Create a config map object with the following specifications.
+
+name -> page-config-map
+namespace -> [student-name]
+config data key-value pair:
+PAGE_CONTENT -> "Green-Pages from Yellow World!"
+Edit the pages deployment in the namespace [student-name] & add an environment variable to the container
+
+name -> PAGE_CONTENT
+value -> fetch it from configmap name page-config-map [key is PAGE_CONTENT]
+Implement the above tasks by creating manifest/yaml files
+Create deployment/pages-config.yaml
+
+apiVersion: v1
+data:
+  PAGE_CONTENT: Green-Pages coming from Yellow-World!
+kind: ConfigMap
+metadata:
+  name: pages-config-map
+  namespace: [student-name]
+Update deployment/pages-deployment.yaml
+
+      containers:
+        - image: [docker-username]/pages:[tag]
+          name: pages
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PAGE_CONTENT
+              valueFrom:
+                configMapKeyRef:
+                  name: pages-config-map
+                  key: PAGE_CONTENT
+Deploy and test locally on minikube
+If minikube has been stopped, start it by running the command minikube start --driver=virtualbox
+
+Verify the kubectl context kubectl config get-contexts is set to minikube. If not, set it to minikube kubectl config use-context minikube
+
+Set up [student-name] namespace to point to the current context
+
+kubectl config set-context --current --namespace=[student-name]
+Create kubernetes objects
+
+kubectl apply -f deployment/pages-config.yaml
+kubectl apply -f deployment/pages-deployment.yaml
+Verify the created objects
+
+kubectl get deployment pages
+kubectl get configmap pages-config-map
+kubectl get pods -o wide
+Access the application by port-forwarding on localhost:8080
+
+kubectl port-forward svc/pages 8080:8080
+
+curl localhost:8080
+Stop the port-forwarding
+
+Deploy the application to production cluster
+Switch kubectl to point to production cluster
+
+Verify the kubectl context is set to the production cluster
+
+kubectl config get-contexts
+Skip this step if the kubectl prod context is set to your respective namespace
+
+Set up [student-name] namespace to point to the current context
+
+kubectl config set-context --current --namespace=[student-name]
+Create the kubernetes objects
+
+Verify the created objects
+
+Access the application by port-forwarding on localhost:8080
+
+kubectl port-forward svc/pages 8080:8080
+
+curl localhost:8080
+Stop the port-forwarding
+
+Commit code changes to the github repository
+
+git add .
+git commit -m "Externalized config"
+git push -u origin master
+Advanced usecase challenges
+Enable refresh scope for automatic synchronization of config map properties in spring boot
+
+Watch for changes in kubernetes api resources and objects, for dynamic loading
+
+Security concerns
