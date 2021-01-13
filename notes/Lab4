@@ -42,10 +42,10 @@ Below are the 2 tasks to be completed within the kubernetes cluster
 Create a config map object with the following specifications.
 
 name -> page-config-map
-namespace -> [student-name]
+namespace -> finchley
 config data key-value pair:
 PAGE_CONTENT -> "Green-Pages from Yellow World!"
-Edit the pages deployment in the namespace [student-name] & add an environment variable to the container
+Edit the pages deployment in the namespace finchley & add an environment variable to the container
 
 name -> PAGE_CONTENT
 value -> fetch it from configmap name page-config-map [key is PAGE_CONTENT]
@@ -58,7 +58,7 @@ data:
 kind: ConfigMap
 metadata:
   name: pages-config-map
-  namespace: [student-name]
+  namespace: finchley
 Update deployment/pages-deployment.yaml
 
       containers:
@@ -77,9 +77,9 @@ If minikube has been stopped, start it by running the command minikube start --d
 
 Verify the kubectl context kubectl config get-contexts is set to minikube. If not, set it to minikube kubectl config use-context minikube
 
-Set up [student-name] namespace to point to the current context
+Set up finchley namespace to point to the current context
 
-kubectl config set-context --current --namespace=[student-name]
+kubectl config set-context --current --namespace=finchley
 Create kubernetes objects
 
 kubectl apply -f deployment/pages-config.yaml
@@ -104,9 +104,9 @@ Verify the kubectl context is set to the production cluster
 kubectl config get-contexts
 Skip this step if the kubectl prod context is set to your respective namespace
 
-Set up [student-name] namespace to point to the current context
+Set up finchley namespace to point to the current context
 
-kubectl config set-context --current --namespace=[student-name]
+kubectl config set-context --current --namespace=finchley
 Create the kubernetes objects
 
 Verify the created objects
